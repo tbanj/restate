@@ -49,6 +49,7 @@ import { useFonts } from "expo-font";
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import GlobalProvider from "@/lib/global-provider";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -68,5 +69,9 @@ export default function Layout() {
 
   if (!fontsLoaded) return null;
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <GlobalProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </GlobalProvider>
+  );
 }

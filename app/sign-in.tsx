@@ -7,22 +7,54 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
-import { login } from "@/lib/appwrite";
+import { login, logout } from "@/lib/appwrite";
+import { useGlobalContext } from "@/lib/global-provider";
+import { Link, Redirect } from "expo-router";
 
 const SignIn = () => {
+  const { loading, isLoggedIn, refetch } = useGlobalContext();
+
+  useEffect(() => {
+    const redirectToHome = () => {
+      return <Redirect href="/" />;
+    };
+
+    if (!loading && isLoggedIn) redirectToHome();
+
+    return () => {};
+  }, [isLoggedIn]);
+
   const handleLogin = async () => {
     const result = await login();
-
+    // hello
     if (result) {
-      console.log("Login Success");
+      console.warn("result", result);
+      console.warn("Login Success");
+      refetch();
     } else {
       Alert.alert("Error", "Failed to login");
     }
   };
+
+  const handleLogout = async () => {
+    const result = await logout();
+
+    if (result) {
+      console.log("logout", result);
+      console.log("logout Success");
+    } else {
+      Alert.alert("Error", "Failed to logout");
+    }
+  };
+
+  useEffect(() => {
+    // handleLogout();
+    return () => {};
+  }, []);
 
   return (
     <SafeAreaView className="bg-white h-full">
