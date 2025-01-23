@@ -52,3 +52,30 @@ export async function login() {
     return false;
   }
 }
+
+export async function logout() {
+  try {
+    await account.deleteSession("current");
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function getUser() {
+  try {
+    const response = await account.get();
+
+    if (response.$id) {
+      const userAvatar = avatar.getInitials(response.name);
+      return {
+        ...response,
+        avatar: userAvatar.toString(),
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
