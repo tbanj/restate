@@ -6,58 +6,75 @@ import {
   Touchable,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
-import { login, logout } from "@/lib/appwrite";
+import {
+  checkIfAuthenticated,
+  getCurrentUser,
+  login,
+  logout,
+} from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
-import { Link, Redirect } from "expo-router";
+import { Link, Redirect, router } from "expo-router";
 
 const SignIn = () => {
   const { loading, isLoggedIn, refetch } = useGlobalContext();
-
-  useEffect(() => {
-    const redirectToHome = () => {
-      return <Redirect href="/" />;
-    };
-
-    if (!loading && isLoggedIn) redirectToHome();
-
-    return () => {};
-  }, [isLoggedIn]);
+  const [redirectToHomeState, setRedirectToHomeState] = useState(false);
+  const [IfAuthenticated, setIfAuthenticated] = useState<boolean>(false);
 
   const handleLogin = async () => {
     const result = await login();
-    // hello
-    if (result) {
-      console.warn("result", result);
-      console.warn("Login Success");
-      refetch();
+    console.log("result check", result);
+    if (!!result) {
+      setIfAuthenticated(true);
+      const res = await checkIfAuthenticated(result);
+      if (res) {
+        refetch();
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log("loading, isLoggedIn,", loading, isLoggedIn);
+        setIfAuthenticated(false);
+        return router.push("/");
+      }
     } else {
       Alert.alert("Error", "Failed to login");
     }
   };
 
-  const handleLogout = async () => {
-    const result = await logout();
-
-    if (result) {
-      console.log("logout", result);
-      console.log("logout Success");
-    } else {
-      Alert.alert("Error", "Failed to logout");
-    }
-  };
-
   useEffect(() => {
-    // handleLogout();
+    const redirectToHome = async () => {
+      setRedirectToHomeState(true);
+      // await logout();
+
+      return <Redirect href="/" />;
+    };
+
+    if (!loading && isLoggedIn) {
+      // redirectToHome();
+      redirectToHome();
+      // <Redirect href="/" />;
+    }
+
+    if (!isLoggedIn && !redirectToHomeState) {
+      setRedirectToHomeState(true);
+    }
+
     return () => {};
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <SafeAreaView className="bg-white h-full">
+      {IfAuthenticated && (
+        <SafeAreaView className="absolute z-10 h-full flex justify-center items-center w-full">
+          <View className="flex-col">
+            <ActivityIndicator className="text-primary-300" size="large" />
+            <Text className="text-sm text-black-300">Please wait...</Text>
+          </View>
+        </SafeAreaView>
+      )}
       <ScrollView contentContainerClassName="h-full">
         <Image
           source={images.onboarding}

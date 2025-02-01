@@ -9,10 +9,10 @@ import { initializeDeepLinks } from "@/lib/appwrite";
 export default function AppLayout() {
   const { loading, isLoggedIn } = useGlobalContext();
 
-  useEffect(() => {
+  /* useEffect(() => {
     const unsubscribe = initializeDeepLinks();
     return () => unsubscribe();
-  }, []);
+  }, []); */
 
   if (loading) {
     return (

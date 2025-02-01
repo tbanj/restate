@@ -53,6 +53,7 @@ const Profile = () => {
   const handleLogout = async () => {
     console.log("hi");
     const result = await logout();
+    await new Promise((resolve) => setTimeout(resolve, 500));
     if (result) {
       Alert.alert("Success", "Logged out successfully");
       refetch();

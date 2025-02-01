@@ -1,7 +1,13 @@
-import { Account, Avatars, Client, OAuthProvider } from "react-native-appwrite";
+import {
+  Account,
+  Avatars,
+  Client,
+  Databases,
+  OAuthProvider,
+} from "react-native-appwrite";
 import * as Linking from "expo-linking";
-import { openAuthSessionAsync } from "expo-web-browser";
-import { Platform } from "react-native";
+// import { openAuthSessionAsync } from "expo-web-browser";
+import * as WebBrowser from "expo-web-browser";
 
 export const config = {
   platform: "react-native",
@@ -14,7 +20,7 @@ export const config = {
   agentsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID,
   propertiesCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID,
-  // bucketId: process.env.EXPO_PUBLIC_APPWRITE_BUCKET_ID,
+  bucketId: process.env.EXPO_PUBLIC_APPWRITE_BUCKET_ID,
 };
 
 export const client = new Client();
@@ -26,91 +32,110 @@ client
 
 export const avatar = new Avatars(client);
 export const account = new Account(client);
+export const databases = new Databases(client);
 
 // Keep track of the active subscription
 let activeSubscription: { remove: () => void } | null = null;
 
-export async function login() {
+// Check if user is authenticated
+export async function checkIfAuthenticated(data: any) {
   try {
-    const state = Math.random().toString(36).substring(7);
-    const redirectUri = Linking.createURL("/");
-
-    // Add event listener for handling the redirect
-    const subscription = Linking.addEventListener("url", async (event) => {
-      try {
-        const url = new URL(event.url);
-        const secret = url.searchParams.get("secret");
-        const userId = url.searchParams.get("userId");
-
-        const currentSession = await account.getSession("current");
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        /*  currentSession..if it is object and has a member, it will be +,but if it doesn't
-        have a member, it will be false
-        if it does */
-        console.log(
-          "currentSession inner",
-          currentSession,
-          "!!currentSession",
-          !!currentSession
-        );
-        if (secret && userId) {
-          if (!!currentSession) {
-            // Create the session
-            await account.createSession(userId, secret);
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          }
-
-          // Clean up
-          subscription.remove();
-        }
-      } catch (error) {
-        console.error("Error handling redirect:", error, typeof error);
-      }
-    });
-
-    // Create OAuth2 token
-    const response = await account.createOAuth2Token(
-      OAuthProvider.Google,
-      redirectUri,
-      redirectUri,
-      ["profile", "email"]
-    );
-
-    if (!response) {
-      throw new Error("Failed to create OAuth2 token");
+    await account.createSession(data?.userId, data?.secret);
+    // await new Promise((resolve) => setTimeout(resolve, 500));
+    const currentUser = await account.get();
+    if (currentUser.$id) {
+      return true; // User is authenticated
     }
-
-    // Open auth session in browser
-    const browserResult = await openAuthSessionAsync(
-      response.toString(),
-      redirectUri,
-      {
-        showInRecents: true,
-        preferEphemeralSession: true,
-      }
-    );
-
-    /* 
-    Wait a bit to allow the session to be created,
-    */
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Check if user is authenticated
-    try {
-      const currentUser = await account.get();
-      if (currentUser.$id) {
-        return true; // User is authenticated
-      }
-    } catch (error) {
-      console.error("Error checking user session:", error);
-    }
-
-    return false; // Authentication failed
   } catch (error) {
-    console.error("Login error:", error);
-    return false;
+    console.error("Error checking user session:", error);
   }
+}
+
+export async function login() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const state = Math.random().toString(36).substring(7);
+      const redirectUri = Linking.createURL("/");
+
+      // First, try to clean up any existing sessions
+      try {
+        // Cleanup function
+        await WebBrowser.coolDownAsync();
+      } catch (cleanupError) {
+        console.log("Cleanup error (safe to ignore):", cleanupError);
+      }
+
+      // Warm up a new session
+      await WebBrowser.warmUpAsync();
+
+      // Create OAuth2 token
+      const response = account.createOAuth2Token(
+        OAuthProvider.Google,
+        redirectUri,
+        redirectUri,
+        ["profile", "email"]
+      );
+
+      if (!response) {
+        throw new Error("Failed to create OAuth2 token");
+      }
+
+      // Open auth session in browser
+      const browserResult = await WebBrowser.openAuthSessionAsync(
+        response.toString(),
+        redirectUri,
+        {
+          showInRecents: true,
+          preferEphemeralSession: true,
+        }
+      );
+
+      /* 
+      Wait a bit to allow the session to be created,
+      */
+      function cleanup() {
+        subscription.remove();
+        WebBrowser.coolDownAsync().catch(console.error);
+      }
+
+      // Add event listener for handling the redirect
+      const subscription = Linking.addEventListener("url", async (event) => {
+        try {
+          const url = new URL(event.url);
+          const secret = url.searchParams.get("secret");
+          const userId = url.searchParams.get("userId");
+          if (secret && userId) {
+            // Clean up
+            subscription.remove();
+            // Resolve the promise with the authentication data
+            // console.log("userId", userId);
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            resolve({ secret, userId });
+            cleanup();
+          }
+        } catch (error) {
+          console.error("Error handling redirect:", error, typeof error);
+          subscription.remove();
+          // Reject the promise with the error
+          reject(error);
+          cleanup();
+        }
+      });
+
+      // Optional: Set a timeout to handle cases where redirect doesn't happen
+      const timeout = setTimeout(() => {
+        subscription.remove();
+        reject(new Error("Authentication timed out"));
+        cleanup();
+      }, 60000); // 1 minute timeout
+    } catch (error) {
+      console.error("Login error:", error);
+      // Make sure to clean up even if there's an error
+      await WebBrowser.coolDownAsync();
+      // Reject the promise with the error
+      reject(error);
+    }
+  });
 }
 
 export async function logout() {
@@ -134,7 +159,6 @@ export async function logout() {
 export async function getCurrentUser() {
   try {
     const response = await account.get();
-
     if (response.$id) {
       const userAvatar = avatar.getInitials(response.name);
       return {
@@ -150,7 +174,6 @@ export async function getCurrentUser() {
 }
 
 async function handleDeepLink(url: string) {
-  console.log("handleDeepLink url empty", url);
   if (!url) return;
 
   try {
@@ -159,8 +182,9 @@ async function handleDeepLink(url: string) {
     const userId = parsedUrl.searchParams.get("userId");
 
     if (secret && userId) {
-      console.log("handleDeepLink secret && userId", secret, userId);
       await account.createSession(userId, secret);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // return true;
     }
   } catch (error) {
     console.error("Deep link handling error:", error);
