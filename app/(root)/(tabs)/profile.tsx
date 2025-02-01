@@ -9,13 +9,13 @@ import {
   View,
 } from "react-native";
 
-// import { logout } from "@/lib/appwrite";
-import { useGlobalContext } from "@/lib/global-provider";
-
 import icons from "@/constants/icons";
-import { settings } from "@/constants/data";
+import { NativeModalState, settings } from "@/constants/data";
 import { logout } from "@/lib/appwrite";
 import images from "@/constants/images";
+import LogoutBTN from "@/components/LogoutBTN";
+import { useState } from "react";
+import { useGlobalContext } from "@/lib/global-provider";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -48,10 +48,17 @@ const SettingsItem = ({
 );
 
 const Profile = () => {
+  const [signOutState, setSignOutState] = useState({
+    signOutActivated: false,
+    signOutDone: NativeModalState.default,
+    BTNDisabled: false,
+  });
   const { user, refetch } = useGlobalContext();
 
   const handleLogout = async () => {
     console.log("hi");
+
+    // you will make use of below code if yes is clicked
     const result = await logout();
     await new Promise((resolve) => setTimeout(resolve, 500));
     if (result) {
@@ -60,6 +67,11 @@ const Profile = () => {
     } else {
       Alert.alert("Error", "Failed to logout");
     }
+    /* setSignOutState((prev: any) => ({
+                    ...prev,
+                    signOutActivated: true,
+                    signOutDone: NativeModalState.success,
+                  })); */
   };
 
   return (
@@ -106,6 +118,18 @@ const Profile = () => {
         </View>
 
         <View className="flex flex-col border-t mt-5 pt-5 border-primary-200">
+          {/* <LogoutBTN children={<SettingsItem
+                      icon={icons.logout}
+                      title="Logout"
+                      textStyle="text-danger"
+                      showArrow={false}
+                      onPress={handleLogout}
+                    />}
+                    signOutState={signOutState}
+                    setSignOutState={setSignOutState}
+                    /> */}
+
+          {/* temporary */}
           <SettingsItem
             icon={icons.logout}
             title="Logout"
