@@ -29,8 +29,8 @@ const SignIn = () => {
   const handleLogin = async () => {
     const result = await login();
     console.log("result check", result);
+    setIfAuthenticated(true);
     if (!!result) {
-      setIfAuthenticated(true);
       const res = await checkIfAuthenticated(result);
       if (res) {
         refetch();

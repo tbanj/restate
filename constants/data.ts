@@ -163,3 +163,10 @@ export const gallery = [
     image: images.japan,
   },
 ];
+
+export const NativeModalState = {
+  pending: "pending",
+  default: "default",
+  success: "success",
+  dismiss: "dismiss",
+};
