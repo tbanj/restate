@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HomeComponent from "@/components/HomeComponent";
 import { router, useLocalSearchParams } from "expo-router";
 import { useAppwrite } from "@/lib/useAppwrite";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
@@ -22,11 +21,6 @@ import Filters from "@/components/Filters";
 const Explore = () => {
   const { user, refetch: refetched } = useGlobalContext();
   const params = useLocalSearchParams<{ query?: string; filter?: string }>();
-
-  const { data: latestProperties, loading: latestPropertiesLoading } =
-    useAppwrite({
-      fn: getLatestProperties,
-    });
 
   const {
     data: properties,
