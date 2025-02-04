@@ -50,7 +50,7 @@ const HomeComponent = () => {
     });
   }, [params.filter, params.query]);
 
-  const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+  const handleCardPress = (id: string) => router.push(`/(properties)/${id}`);
 
   return (
     <>
