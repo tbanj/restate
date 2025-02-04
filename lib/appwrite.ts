@@ -4,6 +4,7 @@ import {
   Client,
   Databases,
   OAuthProvider,
+  Query,
 } from "react-native-appwrite";
 import * as Linking from "expo-linking";
 // import { openAuthSessionAsync } from "expo-web-browser";
@@ -54,7 +55,6 @@ export async function checkIfAuthenticated(data: any) {
 export async function login() {
   return new Promise(async (resolve, reject) => {
     try {
-      const state = Math.random().toString(36).substring(7);
       const redirectUri = Linking.createURL("/");
 
       // First, try to clean up any existing sessions
@@ -79,16 +79,6 @@ export async function login() {
       if (!response) {
         throw new Error("Failed to create OAuth2 token");
       }
-
-      // Open auth session in browser
-      const browserResult = await WebBrowser.openAuthSessionAsync(
-        response.toString(),
-        redirectUri,
-        {
-          showInRecents: true,
-          preferEphemeralSession: true,
-        }
-      );
 
       /* 
       Wait a bit to allow the session to be created,
@@ -121,6 +111,16 @@ export async function login() {
           cleanup();
         }
       });
+
+      // Open auth session in browser
+      const browserResult = await WebBrowser.openAuthSessionAsync(
+        response.toString(),
+        redirectUri,
+        {
+          showInRecents: true,
+          preferEphemeralSession: true,
+        }
+      );
 
       // Optional: Set a timeout to handle cases where redirect doesn't happen
       const timeout = setTimeout(() => {
@@ -211,4 +211,73 @@ export function initializeDeepLinks() {
   });
 
   return () => subscription.remove();
+}
+
+export async function getLatestProperties() {
+  try {
+    const result = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      [Query.orderAsc("$createdAt"), Query.limit(5)]
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function getProperties({
+  filter,
+  query,
+  limit,
+}: {
+  filter: string;
+  query: string;
+  limit?: number;
+}) {
+  try {
+    const buildQuery = [Query.orderDesc("$createdAt")];
+
+    if (filter && filter !== "All")
+      buildQuery.push(Query.equal("type", filter));
+
+    if (query)
+      buildQuery.push(
+        Query.or([
+          Query.search("name", query),
+          Query.search("address", query),
+          Query.search("type", query),
+        ])
+      );
+
+    if (limit) buildQuery.push(Query.limit(limit));
+
+    const result = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      buildQuery
+    );
+
+    return result.documents;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+// write function to get property by id
+export async function getPropertyById({ id }: { id: string }) {
+  try {
+    const result = await databases.getDocument(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      id
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }

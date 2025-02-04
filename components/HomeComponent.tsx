@@ -11,51 +11,29 @@ import {
 import React, { useEffect, useMemo } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useAppwrite } from "@/lib/useAppwrite";
-import { logout } from "@/lib/appwrite";
+import { getLatestProperties, getProperties, logout } from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
 import NoResults from "./NoResults";
 import { Card, FeaturedCard } from "./Cards";
 import icons from "@/constants/icons";
 import Search from "./Search";
 import Filters from "./Filters";
-import seed from "@/lib/seed";
 
 const HomeComponent = () => {
   const { user, refetch: refetched } = useGlobalContext();
-  console.log("user", user);
-
   const params = useLocalSearchParams<{ query?: string; filter?: string }>();
 
-  /* const { data: latestProperties, loading: latestPropertiesLoading } =
-        useAppwrite({
-          fn: async function () {
-            return [];
-          },
-        });
-     */
-  // temporary
-
-  const latestProperties: any[] = [];
-  const latestPropertiesLoading: boolean = false;
-
-  const handleLogout = async () => {
-    const result = await logout();
-    if (result) {
-      Alert.alert("Success", "Logged out successfully");
-      refetched();
-    } else {
-      Alert.alert("Error", "Failed to logout");
-    }
-  };
+  const { data: latestProperties, loading: latestPropertiesLoading } =
+    useAppwrite({
+      fn: getLatestProperties,
+    });
 
   const {
     data: properties,
     refetch,
     loading,
   } = useAppwrite({
-    fn: async function () {
-      return null;
-    },
+    fn: getProperties,
     params: {
       filter: params.filter!,
       query: params.query!,
