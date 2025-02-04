@@ -43,6 +43,7 @@ const HomeComponent = () => {
   });
 
   useEffect(() => {
+    console.log("params.filter", params.filter, "params.query", params.query);
     refetch({
       filter: params.filter!,
       query: params.query!,
