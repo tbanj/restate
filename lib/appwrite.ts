@@ -7,7 +7,6 @@ import {
   Query,
 } from "react-native-appwrite";
 import * as Linking from "expo-linking";
-// import { openAuthSessionAsync } from "expo-web-browser";
 import * as WebBrowser from "expo-web-browser";
 
 export const config = {
@@ -45,7 +44,7 @@ export async function checkIfAuthenticated(data: any) {
     // await new Promise((resolve) => setTimeout(resolve, 500));
     const currentUser = await account.get();
     if (currentUser.$id) {
-      return true; // User is authenticated
+      return true;
     }
   } catch (error) {
     console.error("Error checking user session:", error);
@@ -98,7 +97,6 @@ export async function login() {
             // Clean up
             subscription.remove();
             // Resolve the promise with the authentication data
-            // console.log("userId", userId);
             await new Promise((resolve) => setTimeout(resolve, 500));
             resolve({ secret, userId });
             cleanup();
@@ -127,7 +125,7 @@ export async function login() {
         subscription.remove();
         reject(new Error("Authentication timed out"));
         cleanup();
-      }, 60000); // 1 minute timeout
+      }, 60000);
     } catch (error) {
       console.error("Login error:", error);
       // Make sure to clean up even if there's an error

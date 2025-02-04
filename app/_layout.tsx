@@ -42,7 +42,7 @@
 //   );
 // }
 
-import { View, Text } from "react-native";
+import { View, Text, LogBox } from "react-native";
 import "./global.css";
 import { useFonts } from "expo-font";
 
@@ -60,6 +60,8 @@ export default function Layout() {
     "Rubik-Regular": require("../assets/fonts/Rubik-Regular.ttf"),
     "Rubik-SemiBold": require("../assets/fonts/Rubik-SemiBold.ttf"),
   });
+
+  LogBox.ignoreLogs(["AppwriteException:"]);
 
   useEffect(() => {
     if (fontsLoaded) {

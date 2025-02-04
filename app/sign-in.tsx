@@ -28,14 +28,12 @@ const SignIn = () => {
 
   const handleLogin = async () => {
     const result = await login();
-    console.log("result check", result);
     setIfAuthenticated(true);
     if (!!result) {
       const res = await checkIfAuthenticated(result);
       if (res) {
         refetch();
         await new Promise((resolve) => setTimeout(resolve, 500));
-        console.log("loading, isLoggedIn,", loading, isLoggedIn);
         setIfAuthenticated(false);
         return router.push("/");
       }

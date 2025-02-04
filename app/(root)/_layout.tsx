@@ -23,7 +23,6 @@ export default function AppLayout() {
   }
 
   if (!isLoggedIn) {
-    console.log("isLogged checker", isLoggedIn);
     return <Redirect href="/sign-in" />;
   }
 

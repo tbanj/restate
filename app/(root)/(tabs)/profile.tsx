@@ -56,8 +56,6 @@ const Profile = () => {
   const { user, refetch } = useGlobalContext();
 
   const handleLogout = async () => {
-    console.log("hi");
-
     // you will make use of below code if yes is clicked
     const result = await logout();
     await new Promise((resolve) => setTimeout(resolve, 500));
