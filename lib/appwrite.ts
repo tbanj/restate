@@ -79,8 +79,8 @@ export async function login() {
       // Create OAuth2 token
       const response = account.createOAuth2Token(
         OAuthProvider.Google,
-        redirectUri,
-        redirectUri,
+        `${redirectUri}`,
+        `${redirectUri}`,
         ["profile", "email"]
       );
 
@@ -122,7 +122,7 @@ export async function login() {
       // Open auth session in browser
       const browserResult = await WebBrowser.openAuthSessionAsync(
         response.toString(),
-        redirectUri,
+        `${redirectUri}`,
         {
           showInRecents: true,
           preferEphemeralSession: true,

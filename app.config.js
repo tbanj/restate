@@ -18,6 +18,11 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.tbanj.estate_choice",
+      splash: {
+        image: "./assets/images/splash-icon.png",
+        resizeMode: "cover",
+        backgroundColor: "#ffffff",
+      },
     },
     android: {
       // temporary
@@ -27,6 +32,11 @@ export default {
       },
       userInterfaceStyle: "automatic",
       package: "com.tbanj.estate_choice",
+      splash: {
+        image: "./assets/images/splash-icon.png",
+        resizeMode: "cover",
+        backgroundColor: "#ffffff",
+      },
     },
     web: {
       bundler: "metro",
@@ -41,9 +51,9 @@ export default {
           image: "./assets/images/splash-icon.png",
 
           backgroundColor: "#ffffff",
-          /* resizeMode: "cover",
+          resizeMode: "cover",
+          /* ,
           enableFullScreenImage_legacy: true, */
-          imageWidth: 200,
         },
       ],
       [
