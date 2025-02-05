@@ -1,9 +1,9 @@
 import "dotenv/config";
 export default {
   expo: {
-    name: "estate_Choice",
-    slug: "estate_Choice",
-    version: "1.0.0",
+    name: "estate_choice",
+    slug: "estate_choice",
+    version: "1.0.1",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "restate",
@@ -11,13 +11,13 @@ export default {
     // temporary
     splash: {
       image: "./assets/images/icon.png",
-      resizeMode: "contain",
+      resizeMode: "cover",
       backgroundColor: "#FFFFFF",
     },
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.tbanj.estate_Choice",
+      bundleIdentifier: "com.tbanj.estate_choice",
     },
     android: {
       // temporary
@@ -26,7 +26,7 @@ export default {
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
-      package: "com.tbanj.estate_Choice",
+      package: "com.tbanj.estate_choice",
     },
     web: {
       bundler: "metro",
