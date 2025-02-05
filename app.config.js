@@ -8,14 +8,21 @@ export default {
     icon: "./assets/images/icon.png",
     scheme: "restate",
     userInterfaceStyle: "automatic",
+    // temporary
+    splash: {
+      image: "./assets/images/icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#FFFFFF",
+    },
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.tbanj.estate_Choice",
     },
     android: {
+      // temporary
       adaptiveIcon: {
-        foregroundImage: "./assets/images/icon.png",
+        foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
@@ -32,9 +39,11 @@ export default {
         "expo-splash-screen",
         {
           image: "./assets/images/splash-icon.png",
-          resizeMode: "cover",
+
           backgroundColor: "#ffffff",
-          enableFullScreenImage_legacy: true,
+          /* resizeMode: "cover",
+          enableFullScreenImage_legacy: true, */
+          imageWidth: 200,
         },
       ],
       [
