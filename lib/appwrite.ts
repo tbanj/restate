@@ -54,7 +54,16 @@ export async function checkIfAuthenticated(data: any) {
 export async function login() {
   return new Promise(async (resolve, reject) => {
     try {
-      const redirectUri = Linking.createURL("/");
+      // for development
+      // const redirectUri = Linking.createURL("/",);
+      // for development build or  preview build
+      const redirectUri = new URL(
+        Linking.createURL("/", { isTripleSlashed: false })
+      );
+      if (!redirectUri.hostname) {
+        redirectUri.hostname = "localhost";
+      }
+      console.log("login redirectUri", redirectUri);
 
       // First, try to clean up any existing sessions
       try {
