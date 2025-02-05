@@ -1,5 +1,5 @@
 import { Redirect, Slot } from "expo-router";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGlobalContext } from "@/lib/global-provider";
@@ -17,7 +17,10 @@ export default function AppLayout() {
   if (loading) {
     return (
       <SafeAreaView className="bg-white h-full flex justify-center items-center">
-        <ActivityIndicator className="text-primary-300" size="large" />
+        <View className="flex-col space-y-2">
+          <ActivityIndicator className="text-primary-300" size="large" />
+          <Text className="text-sm text-black-300">Please wait...</Text>
+        </View>
       </SafeAreaView>
     );
   }

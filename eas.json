@@ -1,0 +1,46 @@
+{
+  "cli": {
+    "version": ">= 13.4.2",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_APPWRITE_ENDPOINT":" https://cloud.appwrite.io/v1",
+"EXPO_PUBLIC_APPWRITE_PROJECT_ID": "678d8cdf00123a41e009",
+"EXPO_PUBLIC_APPWRITE_DATABASE_ID": "67925baf00085fc71330",
+"EXPO_PUBLIC_APPWRITE_GALLERIES_COLLECTION_ID": "67925dd7003d8bb7f9c3",
+"EXPO_PUBLIC_APPWRITE_REVIEWS_COLLECTION_ID": "67925e5e003a19894c7e",
+"EXPO_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID": "67925cb5002aaa09436a",
+"EXPO_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID": "67925f85002c4b1a5c6d"
+      },
+      "channel": "development"
+    },
+    "preview": {
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+       "EXPO_PUBLIC_APPWRITE_ENDPOINT":" https://cloud.appwrite.io/v1",
+"EXPO_PUBLIC_APPWRITE_PROJECT_ID": "678d8cdf00123a41e009",
+"EXPO_PUBLIC_APPWRITE_DATABASE_ID": "67925baf00085fc71330",
+"EXPO_PUBLIC_APPWRITE_GALLERIES_COLLECTION_ID": "67925dd7003d8bb7f9c3",
+"EXPO_PUBLIC_APPWRITE_REVIEWS_COLLECTION_ID": "67925e5e003a19894c7e",
+"EXPO_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID": "67925cb5002aaa09436a",
+"EXPO_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID": "67925f85002c4b1a5c6d"
+      },
+      "channel": "preview"
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
