@@ -77,7 +77,7 @@ export const settings = [
     icon: icons.wallet,
   },
   {
-    title: "Profile",
+    title: "Account Detail",
     icon: icons.person,
   },
   {

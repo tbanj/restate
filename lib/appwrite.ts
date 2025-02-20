@@ -10,7 +10,8 @@ import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 
 export const config = {
-  platform: "react-native",
+  // platform: "react-native",
+  platform: "com.tbanj.estate_choice",
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
@@ -63,7 +64,7 @@ export async function login() {
       if (!redirectUri.hostname) {
         redirectUri.hostname = "localhost";
       }
-      console.log("login redirectUri", redirectUri);
+      // console.log("login redirectUri", redirectUri);
 
       // First, try to clean up any existing sessions
       try {
@@ -79,8 +80,8 @@ export async function login() {
       // Create OAuth2 token
       const response = account.createOAuth2Token(
         OAuthProvider.Google,
-        redirectUri,
-        redirectUri,
+        `${redirectUri}`,
+        `${redirectUri}`,
         ["profile", "email"]
       );
 
@@ -122,7 +123,7 @@ export async function login() {
       // Open auth session in browser
       const browserResult = await WebBrowser.openAuthSessionAsync(
         response.toString(),
-        redirectUri,
+        `${redirectUri}`,
         {
           showInRecents: true,
           preferEphemeralSession: true,
