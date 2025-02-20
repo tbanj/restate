@@ -3,26 +3,26 @@ export default {
   expo: {
     name: "estate_choice",
     slug: "estate_choice",
-    version: "1.0.1",
+    version: "1.0.2",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "restate",
     userInterfaceStyle: "automatic",
     // temporary
-    splash: {
+    /* splash: {
       image: "./assets/images/icon.png",
       resizeMode: "cover",
       backgroundColor: "#FFFFFF",
-    },
+    }, */
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.tbanj.estate_choice",
-      splash: {
-        image: "./assets/images/splash-icon.png",
+      /* splash: {
+        image: "./assets/images/splash-light.png",
         resizeMode: "cover",
         backgroundColor: "#ffffff",
-      },
+      }, */
     },
     android: {
       // temporary
@@ -31,12 +31,13 @@ export default {
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
+      permissions: ["INTERNET", "ACCESS_NETWORK_STATE", "ACCESS_WIFI_STATE"],
       package: "com.tbanj.estate_choice",
-      splash: {
-        image: "./assets/images/splash-icon.png",
+      /* splash: {
+        image: "./assets/images/splash-light.png",
         resizeMode: "cover",
         backgroundColor: "#ffffff",
-      },
+      }, */
     },
     web: {
       bundler: "metro",
@@ -48,12 +49,11 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/splash-light.png",
 
-          backgroundColor: "#ffffff",
-          resizeMode: "cover",
-          /* ,
-          enableFullScreenImage_legacy: true, */
+          backgroundColor: "#FFFFFF",
+          enableFullScreenImage_legacy: true,
+          imageWidth: 200,
         },
       ],
       [
@@ -78,11 +78,11 @@ export default {
         origin: false,
       },
       eas: {
-        projectId: "6df88ea7-eee2-4c27-a0ac-4f5ac7d53fc1",
+        projectId: "7880a5d9-bd59-417b-bb2e-ab96c7a55b69",
       },
     },
     updates: {
-      url: "https://u.expo.dev/6df88ea7-eee2-4c27-a0ac-4f5ac7d53fc1",
+      url: "https://u.expo.dev/7880a5d9-bd59-417b-bb2e-ab96c7a55b69",
     },
     runtimeVersion: {
       policy: "appVersion",
